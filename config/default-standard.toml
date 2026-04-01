@@ -1,0 +1,125 @@
+[output]
+db_name = "evidence.db"
+jsonl_name = "events.jsonl"
+analysis_name = "analysis.json"
+graph_name = "chains.mmd"
+timeline_jsonl_name = "timeline.jsonl"
+timeline_markdown_name = "timeline.md"
+
+[collection]
+poll_interval_secs = 2
+process_exit_grace_secs = 2
+rapid_connect_window_secs = 120
+short_lived_process_secs = 90
+file_watch_paths = []
+hash_file_limit_mb = 64
+collect_sensitive_content = false
+log_tail_lines = 2000
+log_max_bytes = 8388608
+log_time_window_hours = 72
+
+[collection.linux]
+risk_dirs = ["/tmp", "/var/tmp", "/dev/shm", "~/.cache", "~/Downloads"]
+persistence_paths = [
+  "/etc/systemd/system",
+  "/usr/lib/systemd/system",
+  "~/.config/systemd/user",
+  "~/.config/autostart",
+  "/etc/cron.d",
+  "/etc/cron.daily",
+  "/etc/cron.hourly",
+  "/etc/cron.weekly",
+  "/etc/cron.monthly",
+  "/var/spool/cron",
+  "/etc/rc.local",
+  "/etc/init.d",
+  "/etc/ld.so.preload",
+  "/etc/profile",
+  "/etc/bash.bashrc",
+  "/root/.bashrc",
+  "/root/.profile",
+  "/home/*/.bashrc",
+  "/home/*/.profile",
+]
+trusted_system_dirs = ["/usr/bin", "/usr/sbin", "/bin", "/sbin", "/usr/lib", "/lib"]
+auth_paths = [
+  "/etc/passwd",
+  "/etc/shadow",
+  "/etc/group",
+  "/etc/sudoers",
+  "/etc/sudoers.d",
+  "/root/.ssh/authorized_keys",
+  "/root/.ssh/known_hosts",
+  "/root/.bash_history",
+  "/home/*/.ssh/authorized_keys",
+  "/home/*/.ssh/known_hosts",
+  "/home/*/.bash_history",
+  "/home/*/.zsh_history",
+]
+log_paths = [
+  "/var/log/auth.log",
+  "/var/log/secure",
+  "/var/log/messages",
+  "/var/log/syslog",
+  "/var/log/nginx/access.log",
+  "/var/log/nginx/error.log",
+  "/var/log/apache2/access.log",
+  "/var/log/apache2/error.log",
+  "/var/log/httpd/access_log",
+  "/var/log/httpd/error_log",
+]
+command_log_collectors = ["journalctl", "dmesg"]
+app_log_paths = []
+high_risk_scan_paths = [
+  "/tmp",
+  "/var/tmp",
+  "/dev/shm",
+  "/etc",
+  "/usr/local/bin",
+  "/usr/bin",
+  "/root",
+  "/home",
+]
+web_root_paths = [
+  "/var/www",
+  "/usr/share/nginx/html",
+  "/srv/www",
+]
+recent_file_window_hours = 72
+max_mapped_modules_per_process = 32
+max_recent_login_records = 40
+max_failed_login_records = 40
+max_risk_scan_files = 2500
+ebpf_object_path = ""
+ebpf_perf_pages = 64
+
+[collection.windows]
+risk_dirs = [
+  "%TEMP%",
+  "%LOCALAPPDATA%\\Temp",
+  "%USERPROFILE%\\Downloads",
+  "%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup",
+  "%USERPROFILE%\\AppData\\Roaming",
+]
+startup_paths = [
+  "%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup",
+  "%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup",
+  "C:\\Windows\\System32\\Tasks",
+]
+run_keys = [
+  "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+  "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce",
+  "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+  "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce",
+]
+trusted_system_dirs = [
+  "C:\\Windows\\System32",
+  "C:\\Windows\\SysWOW64",
+  "C:\\Program Files",
+  "C:\\Program Files (x86)",
+]
+
+[report]
+top_chains = 10
+max_timeline_entries = 250
+max_raw_events = 500

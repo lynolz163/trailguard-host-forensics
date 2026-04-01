@@ -1,0 +1,159 @@
+interpreters = [
+  "python",
+  "python3",
+  "bash",
+  "sh",
+  "zsh",
+  "pwsh",
+  "powershell",
+  "wscript",
+  "cscript",
+]
+
+script_hosts = [
+  "powershell.exe",
+  "pwsh.exe",
+  "cmd.exe",
+  "wscript.exe",
+  "cscript.exe",
+  "bash",
+  "sh",
+  "python",
+  "python3",
+]
+
+office_browser_chat = [
+  "winword.exe",
+  "excel.exe",
+  "powerpnt.exe",
+  "outlook.exe",
+  "chrome.exe",
+  "msedge.exe",
+  "firefox.exe",
+  "teams.exe",
+  "slack.exe",
+  "discord.exe",
+  "wechat.exe",
+  "qq.exe",
+]
+
+privilege_brokers = [
+  "sudo",
+  "su",
+  "doas",
+  "pkexec",
+  "runuser",
+]
+
+masquerade_names = [
+  "svchost.exe",
+  "lsass.exe",
+  "explorer.exe",
+  "systemd",
+  "dbus-daemon",
+  "cron",
+]
+
+uncommon_remote_ports = [3333, 3334, 4444, 4555, 5555, 5556, 6666, 6667, 7029, 7777, 7778, 8081, 8443, 8888, 8899, 9000, 9999, 14433, 14444, 14455, 15555]
+
+miner_process_names = [
+  "xmrig",
+  "xmrig-proxy",
+  "minerd",
+  "cpuminer",
+  "cpuminer-multi",
+  "cgminer",
+  "bfgminer",
+  "t-rex",
+  "teamredminer",
+  "nbminer",
+  "lolminer",
+  "phoenixminer",
+  "nanominer",
+  "gminer",
+  "excavator",
+  "kinsing",
+]
+
+miner_cmdline_keywords = [
+  "stratum+tcp",
+  "stratum+ssl",
+  "stratum1+tcp",
+  "stratum2+tcp",
+  "--url",
+  "--userpass",
+  "--algo",
+  "--coin",
+  "--donate-level",
+  "--cpu-max-threads-hint",
+  "--print-time",
+  "randomx",
+  "rx/0",
+  "rx",
+  "monero",
+  "xmrig",
+  "minerd",
+  "cpuminer",
+  "nicehash",
+  "supportxmr",
+  "nanopool",
+  "2miners",
+  "moneroocean",
+  "hashvault",
+  "ethermine",
+  "wallet",
+  "rig-id",
+]
+
+miner_pool_ports = [3333, 3334, 4444, 4555, 5555, 5556, 6666, 6667, 7029, 7777, 7778, 8888, 8899, 9000, 9999, 14433, 14444, 14455, 15555]
+
+miner_pool_indicators = [
+  "stratum",
+  "pool",
+  "supportxmr",
+  "minexmr",
+  "nanopool",
+  "ethermine",
+  "2miners",
+  "moneroocean",
+  "hashvault",
+  "nicehash",
+  "f2pool",
+  "xmr",
+  "xmrig",
+  "mock-pool",
+]
+
+rapid_file_exec_window_secs = 180
+parent_exit_network_grace_secs = 120
+failed_login_burst_threshold = 3
+
+suspicious_auth_paths = [
+  "/etc/sudoers",
+  "/etc/sudoers.d",
+  "authorized_keys",
+  "known_hosts",
+  "ld.so.preload",
+  ".bashrc",
+  ".profile",
+]
+
+[[suspicious_parent_child]]
+parent = "winword.exe"
+child = "powershell.exe"
+
+[[suspicious_parent_child]]
+parent = "excel.exe"
+child = "cmd.exe"
+
+[[suspicious_parent_child]]
+parent = "chrome.exe"
+child = "powershell.exe"
+
+[[suspicious_parent_child]]
+parent = "outlook.exe"
+child = "wscript.exe"
+
+[[suspicious_parent_child]]
+parent = "firefox.exe"
+child = "cmd.exe"

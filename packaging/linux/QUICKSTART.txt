@@ -1,0 +1,63 @@
+TrailGuard Linux Deployment Bundle
+=================================
+
+1) Install
+----------
+  sudo ./install.sh
+
+  Non-root example:
+    ./install.sh --install-dir "$HOME/.local/trailguard" --link-dir "$HOME/.local/bin"
+
+2) First run
+------------
+  One-shot static triage:
+    trailguard-static-scan
+
+  Step-by-step:
+    trailguard-snapshot
+    trailguard-analyze
+    trailguard-report
+
+  Realtime monitor:
+    trailguard-monitor --duration 300
+
+3) Default output
+-----------------
+  Artifact root:
+    /opt/trailguard/artifacts
+
+  Report root:
+    /opt/trailguard/reports
+
+  Static triage flow:
+    snapshot -> analyze -> report
+
+  Default HTML report path:
+    /opt/trailguard/reports/static-scan-<utc-ts>/index.html
+
+4) Miner rules
+--------------
+  TRAILGUARD_RULES=/opt/trailguard/config/rules-miner.toml trailguard-analyze
+  TRAILGUARD_RULES=/opt/trailguard/config/rules-miner.toml trailguard-report
+  TRAILGUARD_RULES=/opt/trailguard/config/rules-miner.toml trailguard-static-scan
+
+5) Install layout
+-----------------
+  /opt/trailguard/bin
+  /opt/trailguard/config
+  /opt/trailguard/artifacts
+  /opt/trailguard/reports
+  /opt/trailguard/logs
+  /opt/trailguard/docs
+
+6) Notes
+--------
+  - This bundle ships a native Linux executable and does not require Python, Node, or .NET.
+  - BUILDINFO.txt records binary hashes, eBPF embedding source, and build time.
+  - The release directory also ships a .sha256 sidecar for tarball integrity verification.
+  - Verify before install: sha256sum -c trailguard-linux-<target>-<timestamp>.tar.gz.sha256
+  - The install config directory may also include default-fast.toml and default-standard.toml profiles.
+  - Snapshot/static-scan use the proc snapshot path; native eBPF is primarily used in monitor mode.
+  - Native eBPF realtime capture depends on host kernel capability and privilege.
+  - If eBPF is unavailable at runtime, TrailGuard falls back to polling-based monitoring.
+  - Core outputs still land in JSONL, SQLite, and HTML.

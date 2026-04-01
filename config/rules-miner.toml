@@ -1,0 +1,75 @@
+# Miner-like focused rule pack.
+# Use with:
+#   trailguard analyze --rules ./config/rules-miner.toml ...
+
+uncommon_remote_ports = [3333, 3334, 4444, 4555, 5555, 5556, 6666, 6667, 7029, 7777, 7778, 8888, 8899, 9000, 9999, 14433, 14444, 14455, 15555]
+
+miner_process_names = [
+  "xmrig",
+  "xmrig-proxy",
+  "minerd",
+  "cpuminer",
+  "cpuminer-multi",
+  "cgminer",
+  "bfgminer",
+  "t-rex",
+  "teamredminer",
+  "nbminer",
+  "lolminer",
+  "phoenixminer",
+  "nanominer",
+  "gminer",
+  "excavator",
+  "kinsing",
+]
+
+miner_cmdline_keywords = [
+  "stratum+tcp",
+  "stratum+ssl",
+  "stratum1+tcp",
+  "stratum2+tcp",
+  "--url",
+  "--userpass",
+  "--algo",
+  "--coin",
+  "--donate-level",
+  "--cpu-max-threads-hint",
+  "--print-time",
+  "randomx",
+  "rx/0",
+  "rx",
+  "monero",
+  "xmrig",
+  "minerd",
+  "cpuminer",
+  "nicehash",
+  "supportxmr",
+  "nanopool",
+  "2miners",
+  "moneroocean",
+  "hashvault",
+  "ethermine",
+  "wallet",
+  "rig-id",
+  "coinhive",
+  "mock-pool",
+]
+
+miner_pool_ports = [3333, 3334, 4444, 4555, 5555, 5556, 6666, 6667, 7029, 7777, 7778, 8888, 8899, 9000, 9999, 14433, 14444, 14455, 15555]
+
+miner_pool_indicators = [
+  "stratum",
+  "pool",
+  "supportxmr",
+  "minexmr",
+  "nanopool",
+  "ethermine",
+  "2miners",
+  "moneroocean",
+  "hashvault",
+  "nicehash",
+  "f2pool",
+  "xmr",
+  "xmrig",
+  "mock-pool",
+]

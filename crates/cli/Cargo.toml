@@ -1,0 +1,25 @@
+[package]
+name = "trailguard"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+chrono.workspace = true
+clap.workspace = true
+collector-linux-ebpf = { path = "../collector-linux-ebpf" }
+collector-linux-proc = { path = "../collector-linux-proc" }
+collector-windows = { path = "../collector-windows" }
+common-model = { path = "../common-model" }
+correlator = { path = "../correlator" }
+notify.workspace = true
+reporter-html = { path = "../reporter-html" }
+rule-engine = { path = "../rule-engine" }
+serde_json.workspace = true
+storage-sqlite = { path = "../storage-sqlite" }
+thiserror.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true

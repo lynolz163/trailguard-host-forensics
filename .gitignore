@@ -1,0 +1,10 @@
+target/
+*.db
+*.db-shm
+*.db-wal
+/artifacts
+/report
+/dist
+/remote-results
+/trailguard-src.tar.gz
+/rustc-ice-*.txt

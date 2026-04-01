@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+resolve_self() {
+  local source="$1"
+  while [[ -L "$source" ]]; do
+    local dir
+    dir="$(cd -P "$(dirname "$source")" && pwd)"
+    source="$(readlink "$source")"
+    [[ "$source" != /* ]] && source="$dir/$source"
+  done
+  cd -P "$(dirname "$source")" && pwd
+}
+
+usage() {
+  cat <<'EOF'
+Run a one-shot static TrailGuard triage:
+  1. snapshot
+  2. analyze
+  3. report
+
+Usage:
+  trailguard-static-scan [options]
+
+Options:
+  --output <dir>   Artifact directory override
+  --report <dir>   Report directory override
+  --rules <file>   Rules file override
+  --config <file>  Config file override
+  -h, --help       Show this help
+
+Environment:
+  TRAILGUARD_HOME
+  TRAILGUARD_ARTIFACT_ROOT
+  TRAILGUARD_REPORT_ROOT
+  TRAILGUARD_RULES
+EOF
+}
+
+BIN_DIR="$(resolve_self "${BASH_SOURCE[0]}")"
+TRAILGUARD_HOME="${TRAILGUARD_HOME:-$(cd "$BIN_DIR/.." && pwd)}"
+ARTIFACT_ROOT="${TRAILGUARD_ARTIFACT_ROOT:-$TRAILGUARD_HOME/artifacts}"
+REPORT_ROOT="${TRAILGUARD_REPORT_ROOT:-$TRAILGUARD_HOME/reports}"
+RULES_PATH="${TRAILGUARD_RULES:-$TRAILGUARD_HOME/config/rules.toml}"
+CONFIG_PATH="$TRAILGUARD_HOME/config/default.toml"
+
+ARTIFACT_DIR=""
+REPORT_DIR=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --output)
+      ARTIFACT_DIR="$2"
+      shift 2
+      ;;
+    --report)
+      REPORT_DIR="$2"
+      shift 2
+      ;;
+    --rules)
+      RULES_PATH="$2"
+      shift 2
+      ;;
+    --config)
+      CONFIG_PATH="$2"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "[trailguard-static-scan] unknown option: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+mkdir -p "$ARTIFACT_ROOT" "$REPORT_ROOT"
+
+STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+if [[ -z "$ARTIFACT_DIR" ]]; then
+  ARTIFACT_DIR="$ARTIFACT_ROOT/static-scan-$STAMP"
+fi
+if [[ -z "$REPORT_DIR" ]]; then
+  REPORT_DIR="$REPORT_ROOT/static-scan-$STAMP"
+fi
+
+mkdir -p "$ARTIFACT_DIR" "$REPORT_DIR"
+
+echo "[trailguard-static-scan] snapshot => $ARTIFACT_DIR"
+"$TRAILGUARD_HOME/bin/trailguard" \
+  --config "$CONFIG_PATH" \
+  snapshot \
+  --output "$ARTIFACT_DIR"
+
+echo "[trailguard-static-scan] analyze => $REPORT_DIR"
+"$TRAILGUARD_HOME/bin/trailguard" \
+  --config "$CONFIG_PATH" \
+  --rules "$RULES_PATH" \
+  analyze \
+  --input "$ARTIFACT_DIR" \
+  --report "$REPORT_DIR"
+
+echo "[trailguard-static-scan] report => $REPORT_DIR/index.html"
+"$TRAILGUARD_HOME/bin/trailguard" \
+  --config "$CONFIG_PATH" \
+  --rules "$RULES_PATH" \
+  report \
+  --db "$ARTIFACT_DIR/evidence.db" \
+  --html "$REPORT_DIR/index.html"
+
+cat <<EOF
+[trailguard-static-scan] complete
+[trailguard-static-scan] artifacts: $ARTIFACT_DIR
+[trailguard-static-scan] report:    $REPORT_DIR/index.html
+EOF

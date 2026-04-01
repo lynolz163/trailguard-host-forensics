@@ -1,0 +1,21 @@
+[package]
+name = "trailguard-ebpf"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+authors = ["OpenAI Codex"]
+repository = "https://example.invalid/trailguard"
+
+[workspace]
+
+[dependencies]
+aya-ebpf = "0.1.1"
+linux-ebpf-shared = { path = "../../linux-ebpf-shared" }
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+lto = true
+panic = "abort"
+codegen-units = 1

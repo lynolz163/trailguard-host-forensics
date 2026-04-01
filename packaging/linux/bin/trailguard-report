@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+resolve_self() {
+  local source="$1"
+  while [[ -L "$source" ]]; do
+    local dir
+    dir="$(cd -P "$(dirname "$source")" && pwd)"
+    source="$(readlink "$source")"
+    [[ "$source" != /* ]] && source="$dir/$source"
+  done
+  cd -P "$(dirname "$source")" && pwd
+}
+
+latest_dir() {
+  local root="$1"
+  find "$root" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | LC_ALL=C sort | tail -n 1
+}
+
+BIN_DIR="$(resolve_self "${BASH_SOURCE[0]}")"
+TRAILGUARD_HOME="${TRAILGUARD_HOME:-$(cd "$BIN_DIR/.." && pwd)}"
+ARTIFACT_ROOT="${TRAILGUARD_ARTIFACT_ROOT:-$TRAILGUARD_HOME/artifacts}"
+REPORT_ROOT="${TRAILGUARD_REPORT_ROOT:-$TRAILGUARD_HOME/reports}"
+RULES_PATH="${TRAILGUARD_RULES:-$TRAILGUARD_HOME/config/rules.toml}"
+mkdir -p "$REPORT_ROOT"
+
+HAS_DB=0
+HAS_HTML=0
+for arg in "$@"; do
+  if [[ "$arg" == "--db" || "$arg" == --db=* ]]; then
+    HAS_DB=1
+  fi
+  if [[ "$arg" == "--html" || "$arg" == --html=* ]]; then
+    HAS_HTML=1
+  fi
+done
+
+ARGS=("$@")
+if [[ "$HAS_DB" -eq 0 ]]; then
+  LATEST_ARTIFACT="$(latest_dir "$ARTIFACT_ROOT")"
+  if [[ -z "$LATEST_ARTIFACT" ]]; then
+    echo "[trailguard-report] no artifact directory found under $ARTIFACT_ROOT" >&2
+    exit 1
+  fi
+  ARGS=(--db "$LATEST_ARTIFACT/evidence.db" "${ARGS[@]}")
+fi
+if [[ "$HAS_HTML" -eq 0 ]]; then
+  STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+  ARGS=(--html "$REPORT_ROOT/report-$STAMP/index.html" "${ARGS[@]}")
+fi
+
+exec "$TRAILGUARD_HOME/bin/trailguard" \
+  --config "$TRAILGUARD_HOME/config/default.toml" \
+  --rules "$RULES_PATH" \
+  report \
+  "${ARGS[@]}"

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+resolve_self() {
+  local source="$1"
+  while [[ -L "$source" ]]; do
+    local dir
+    dir="$(cd -P "$(dirname "$source")" && pwd)"
+    source="$(readlink "$source")"
+    [[ "$source" != /* ]] && source="$dir/$source"
+  done
+  cd -P "$(dirname "$source")" && pwd
+}
+
+BIN_DIR="$(resolve_self "${BASH_SOURCE[0]}")"
+TRAILGUARD_HOME="${TRAILGUARD_HOME:-$(cd "$BIN_DIR/.." && pwd)}"
+ARTIFACT_ROOT="${TRAILGUARD_ARTIFACT_ROOT:-$TRAILGUARD_HOME/artifacts}"
+mkdir -p "$ARTIFACT_ROOT"
+
+HAS_OUTPUT=0
+for arg in "$@"; do
+  if [[ "$arg" == "--output" || "$arg" == --output=* ]]; then
+    HAS_OUTPUT=1
+    break
+  fi
+done
+
+ARGS=("$@")
+if [[ "$HAS_OUTPUT" -eq 0 ]]; then
+  STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+  ARGS=(--output "$ARTIFACT_ROOT/snapshot-$STAMP" "${ARGS[@]}")
+fi
+
+exec "$TRAILGUARD_HOME/bin/trailguard" \
+  --config "$TRAILGUARD_HOME/config/default.toml" \
+  snapshot \
+  "${ARGS[@]}"

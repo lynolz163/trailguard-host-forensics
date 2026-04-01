@@ -1,0 +1,23 @@
+[package]
+name = "collector-linux-ebpf"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+build = "build.rs"
+
+[dependencies]
+anyhow.workspace = true
+common-model = { path = "../common-model" }
+linux-ebpf-shared = { path = "../linux-ebpf-shared" }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+aya.workspace = true
+bytes.workspace = true
+chrono.workspace = true
+collector-linux-proc = { path = "../collector-linux-proc" }
+libc.workspace = true
+netstat2.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
